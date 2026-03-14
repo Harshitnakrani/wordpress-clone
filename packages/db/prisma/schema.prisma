@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id
+  clerkId   String   @unique
+  email     String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  Page      Page[]
+  Post      Post[]
+}
+
+model Page {
+  id        String   @id
+  title     String
+  slug      String   @unique
+  content   Json?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [authorId], references: [id])
+}
+
+model Post {
+  id        String   @id
+  title     String
+  slug      String   @unique
+  content   Json?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [authorId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
